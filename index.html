@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ES">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVENTARIO | TECNO JUMP CLOUD</title>
+    <style>
+        :root {
+            --primary: #0F172A; --accent: #2563EB; --success: #16A34A;
+            --warning: #F59E0B; --danger: #DC2626; --bg: #F8FAFC;
+            --white: #FFFFFF; --text: #1E293B; --border: #E2E8F0;
+        }
+        [data-theme="dark"] {
+            --primary: #1E293B; --accent: #3B82F6; --success: #22C55E;
+            --bg: #0F172A; --white: #1E293B; --text: #F8FAFC; --border: #334155;
+        }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; text-transform: uppercase; }
+        .container { max-width: 1400px; margin: auto; }
+        .header { background: var(--primary); color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .form-container { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; align-items: end; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 11px; font-weight: bold; color: #64748B; }
+        input, select { padding: 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); text-transform: uppercase; }
+        .btn-main { border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; text-transform: uppercase; }
+        #btnAdd { background: var(--accent); }
+        #btnUpdate { background: var(--warning); display: none; color: #000; }
+        .search-bar { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--border); text-transform: uppercase; }
+        .table-card { background: var(--white); border-radius: 12px; overflow-x: auto; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        th { background: rgba(0,0,0,0.02); padding: 15px; text-align: left; font-size: 12px; color: #64748B; border-bottom: 2px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .stock-tag { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; }
+        .stock-disponible { background: #DCFCE7; color: #166534; }
+        .stock-agotado { background: #FEE2E2; color: #991B1B; }
+        .stock-pedido { background: #FEF3C7; color: #92400E; }
+    </style>
+</head>
+<body data-theme="light">
+
+<div class="container">
+    <div class="header">
+        <h1>TECNO JUMP</h1>
+        <button onclick="window.toggleTheme()" style="cursor:pointer" class="btn-main">🌓 MODO</button>
+    </div>
+
+    <div class="form-container">
+        <input type="hidden" id="editIndex" value="-1">
+        <div class="form-group"><label>MODELO</label><input type="text" id="model"></div>
+        <div class="form-group"><label>REPUESTO</label><input type="text" id="parts"></div>
+        <div class="form-group">
+            <label>ESTADO</label>
+            <select id="stockStatus">
+                <option value="disponible">DISPONIBLE</option>
+                <option value="agotado">AGOTADO</option>
+                <option value="pedido">SÓLO MEDIANTE PEDIDO</option>
+            </select>
+        </div>
+        <div class="form-group"><label>COSTO</label><input type="number" id="buyPrice"></div>
+        <div class="form-group"><label>VENTA</label><input type="number" id="sellPrice"></div>
+        <div class="form-group"><label>NOTA</label><input type="text" id="comment"></div>
+        <div class="form-group">
+            <button class="btn-main" id="btnAdd" onclick="window.saveItem()">REGISTRAR</button>
+            <button class="btn-main" id="btnUpdate" onclick="window.saveItem()">GUARDAR CAMBIOS</button>
+        </div>
+    </div>
+
+    <input type="text" id="searchInput" class="search-bar" onkeyup="window.filterTable()" placeholder="BUSCAR EQUIPO, REPUESTO O NOTAS...">
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th>MODELO</th><th>REPUESTO</th><th>ESTADO</th><th>COSTO</th><th>VENTA</th><th>NOTAS</th><th>ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBm0Z1RWKsit3tp1TLCWtMYAsn2HkqMs0g",
+        authDomain: "tecnojump-4f64b.firebaseapp.com",
+        databaseURL: "https://tecnojump-4f64b-default-rtdb.firebaseio.com",
+        projectId: "tecnojump-4f64b",
+        storageBucket: "tecnojump-4f64b.firebasestorage.app",
+        messagingSenderId: "572737430972",
+        appId: "1:572737430972:web:ab20f5417a93251db777b9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const inventoryRef = ref(db, 'inventario');
+    let inventory = {};
+
+    onValue(inventoryRef, (snapshot) => {
+        inventory = snapshot.val() || {};
+        window.renderTable();
+    });
+
+    window.renderTable = function() {
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = '';
+        const statusMap = {
+            'disponible': { text: 'DISPONIBLE', class: 'stock-disponible' },
+            'agotado': { text: 'AGOTADO', class: 'stock-agotado' },
+            'pedido': { text: 'SÓLO MEDIANTE PEDIDO', class: 'stock-pedido' }
+        };
+
+        Object.keys(inventory).forEach((id) => {
+            const item = inventory[id];
+            const status = statusMap[item.stockStatus] || { text: item.stockStatus.toUpperCase(), class: '' };
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                <td>${item.model.toUpperCase()}</td><td>${item.parts.toUpperCase()}</td>
+                <td><span class="stock-tag ${status.class}">${status.text}</span></td>
+                <td>$${Number(item.buyPrice).toLocaleString('es-CL')}</td>
+                <td>$${Number(item.sellPrice).toLocaleString('es-CL')}</td>
+                <td style="color:#64748B; font-size:12px">${(item.comment || '-').toUpperCase()}</td>
+                <td>
+                    <button onclick="window.editItem('${id}')">✏️</button>
+                    <button onclick="window.deleteItem('${id}')">🗑️</button>
+                </td>`;
+        });
+    };
+
+    window.saveItem = function() {
+        const id = document.getElementById('editIndex').value;
+        const itemData = {
+            model: document.getElementById('model').value,
+            parts: document.getElementById('parts').value,
+            stockStatus: document.getElementById('stockStatus').value,
+            buyPrice: document.getElementById('buyPrice').value,
+            sellPrice: document.getElementById('sellPrice').value,
+            comment: document.getElementById('comment').value
+        };
+
+        if (!itemData.model || !itemData.parts) return alert("FALTAN DATOS OBLIGATORIOS");
+
+        if (id === "-1") { push(inventoryRef, itemData); } 
+        else { 
+            set(ref(db, 'inventario/' + id), itemData);
+            document.getElementById('editIndex').value = "-1";
+            document.getElementById('btnAdd').style.display = 'block';
+            document.getElementById('btnUpdate').style.display = 'none';
+        }
+        window.clearInputs();
+    };
+
+    window.editItem = function(id) {
+        const item = inventory[id];
+        document.getElementById('model').value = item.model;
+        document.getElementById('parts').value = item.parts;
+        document.getElementById('stockStatus').value = item.stockStatus;
+        document.getElementById('buyPrice').value = item.buyPrice;
+        document.getElementById('sellPrice').value = item.sellPrice;
+        document.getElementById('comment').value = item.comment || '';
+        document.getElementById('editIndex').value = id;
+        document.getElementById('btnAdd').style.display = 'none';
+        document.getElementById('btnUpdate').style.display = 'block';
+    };
+
+    window.deleteItem = function(id) { if(confirm("¿ELIMINAR ESTE REGISTRO?")) remove(ref(db, 'inventario/' + id)); };
+    
+    window.filterTable = function() {
+        const filter = document.getElementById("searchInput").value.toUpperCase();
+        const rows = document.querySelectorAll("#tableBody tr");
+        rows.forEach(row => row.style.display = row.innerText.toUpperCase().includes(filter) ? "" : "none");
+    };
+
+    window.clearInputs = function() {
+        document.querySelectorAll('input:not([type=hidden])').forEach(i => i.value = '');
+        document.getElementById('editIndex').value = "-1";
+    };
+
+    window.toggleTheme = function() {
+        const body = document.body;
+        const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    };
+    if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
+</script>
+</body>
+</html>
