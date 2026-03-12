@@ -6,56 +6,40 @@
     <title>INVENTARIO | TECNO JUMP</title>
     <style>
         :root {
-            --primary: #0F172A; --accent: #2563EB; --success: #16A34A;
-            --warning: #F59E0B; --danger: #DC2626; --bg: #F8FAFC;
+            --primary: #0F172A; --accent: #2563EB; --bg: #F8FAFC;
             --white: #FFFFFF; --text: #1E293B; --border: #E2E8F0;
         }
         [data-theme="dark"] {
-            --primary: #1E293B; --accent: #3B82F6; --success: #22C55E;
-            --bg: #0F172A; --white: #1E293B; --text: #F8FAFC; --border: #334155;
+            --primary: #1E293B; --accent: #3B82F6; --bg: #0F172A; --white: #1E293B; --text: #F8FAFC; --border: #334155;
         }
-
         * { box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg); color: var(--text); padding: 10px; 
-            margin: 0; text-transform: uppercase; font-size: 14px;
-        }
-
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; text-transform: uppercase; }
         .container { max-width: 1400px; margin: auto; }
         .header { background: var(--primary); color: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .stats-card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); text-align: center; }
         .stats-card span { font-size: 24px; font-weight: bold; color: var(--accent); display: block; }
-
         .form-container { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
         @media (min-width: 768px) { .form-container { grid-template-columns: repeat(2, 1fr); } }
-
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 11px; font-weight: bold; color: #64748B; }
         input { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 16px; }
-
         .btn-main { border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; width: 100%; }
         #btnAdd { background: var(--accent); }
-        #btnUpdate { background: var(--warning); display: none; color: #000; }
-
-        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--border); font-size: 16px; position: sticky; top: 10px; z-index: 100; background: var(--white); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-
+        #btnUpdate { background: #F59E0B; display: none; color: #000; }
+        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 2px solid var(--accent); font-size: 16px; position: sticky; top: 10px; z-index: 100; background: var(--white); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .table-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        table { width: 100%; border-collapse: collapse; }
         th { background: rgba(0,0,0,0.02); padding: 15px; text-align: left; border-bottom: 2px solid var(--border); }
-        td { padding: 12px 15px; border-bottom: 1px solid var(--border); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
+        td { padding: 12px 15px; border-bottom: 1px solid var(--border); }
         @media (max-width: 767px) {
             table, thead, tbody, th, td, tr { display: block; }
             thead { display: none; }
             tr { background: var(--white); margin-bottom: 15px; border-radius: 12px; padding: 15px; border: 1px solid var(--border); }
-            td { border: none; padding: 8px 0; position: relative; padding-left: 45%; text-align: right; border-bottom: 1px solid var(--border); white-space: normal; }
+            td { border: none; padding: 8px 0; position: relative; padding-left: 45%; text-align: right; border-bottom: 1px solid var(--border); }
             td:before { content: attr(data-label); position: absolute; left: 0; width: 40%; font-weight: bold; text-align: left; color: #64748B; }
             td:last-child { border-bottom: none; display: flex; justify-content: flex-end; gap: 10px; padding-top: 15px; }
         }
-
         .actions-btn { padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--bg); }
-        .loading-overlay { text-align: center; padding: 20px; color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body data-theme="light">
@@ -66,7 +50,7 @@
         <button onclick="window.toggleTheme()" class="btn-main" style="width: auto; padding: 8px 15px;">🌓</button>
     </div>
 
-    <div class="stats-card">PRODUCTOS REGISTRADOS <span id="itemCount">0</span></div>
+    <div class="stats-card">PRODUCTOS <span id="itemCount">0</span></div>
 
     <div class="form-container">
         <input type="hidden" id="editIndex" value="-1">
@@ -81,18 +65,17 @@
         </div>
     </div>
 
-    <input type="text" id="searchInput" class="search-bar" oninput="window.handleSearch()" placeholder="BUSCAR PRODUCTO O NOTA...">
+    <input type="text" id="searchInput" class="search-bar" placeholder="BUSCAR PRODUCTO...">
 
     <div class="table-card">
         <table>
             <thead>
                 <tr>
-                    <th style="width: 25%;">MODELO</th><th style="width: 20%;">REPUESTO</th><th style="width: 15%;">COSTO</th><th style="width: 15%;">VENTA</th><th style="width: 15%;">NOTAS</th><th style="width: 10%;">ACCIONES</th>
+                    <th>MODELO</th><th>REPUESTO</th><th>COSTO</th><th>VENTA</th><th>NOTAS</th><th>ACCIONES</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
-        <div id="loadingMsg" class="loading-overlay" style="display:none;">CARGANDO MÁS PRODUCTOS...</div>
     </div>
 </div>
 
@@ -114,32 +97,48 @@
     const db = getDatabase(app);
     const inventoryRef = ref(db, 'inventario');
     
-    let allData = []; // Array optimizado para búsqueda rápida
+    let cacheData = []; // Los datos se guardan aquí para búsqueda instantánea
     let filteredData = [];
-    let itemsToShow = 100; // Carga inicial
-    let debounceTimer;
+    let searchTimer;
 
+    // Sincronización eficiente con Firebase
     onValue(inventoryRef, (snapshot) => {
-        const rawData = snapshot.val() || {};
-        allData = Object.keys(rawData).map(id => ({ id, ...rawData[id] })).reverse();
-        document.getElementById('itemCount').innerText = allData.length;
-        window.handleSearch(); // Inicia renderizado con filtro actual
+        const data = snapshot.val() || {};
+        // Convertimos a array y pre-procesamos el texto para que la búsqueda no sea pesada
+        cacheData = Object.keys(data).map(id => ({
+            id,
+            ...data[id],
+            searchIndex: `${data[id].model} ${data[id].parts} ${data[id].comment || ''}`.toUpperCase()
+        })).reverse();
+        
+        document.getElementById('itemCount').innerText = cacheData.length;
+        applySearch();
     });
 
-    window.renderTable = function(append = false) {
+    // Función de búsqueda optimizada (Debounce)
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            applySearch();
+        }, 200); // Espera 200ms después de escribir para no trabar el navegador
+    });
+
+    function applySearch() {
+        const query = document.getElementById('searchInput').value.toUpperCase();
+        filteredData = cacheData.filter(item => item.searchIndex.includes(query));
+        renderTable();
+    }
+
+    function renderTable() {
         const tableBody = document.getElementById('tableBody');
-        const loadingMsg = document.getElementById('loadingMsg');
-        
-        if (!append) {
-            tableBody.innerHTML = '';
-            itemsToShow = 100;
-        }
-
         const fragment = document.createDocumentFragment();
-        const start = append ? tableBody.children.length : 0;
-        const end = Math.min(start + 100, filteredData.length);
+        tableBody.innerHTML = '';
 
-        for (let i = start; i < end; i++) {
+        // Solo mostramos los primeros 100 resultados para mantener la velocidad
+        // Si necesitas ver más, la búsqueda filtrará el resto
+        const limit = Math.min(filteredData.length, 100);
+
+        for(let i = 0; i < limit; i++) {
             const item = filteredData[i];
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -154,30 +153,8 @@
                 </td>`;
             fragment.appendChild(row);
         }
-
         tableBody.appendChild(fragment);
-        loadingMsg.style.display = (end < filteredData.length) ? 'block' : 'none';
-    };
-
-    // Carga infinita al hacer scroll
-    window.onscroll = function() {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-            if (tableBody.children.length < filteredData.length) {
-                window.renderTable(true);
-            }
-        }
-    };
-
-    window.handleSearch = function() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const query = document.getElementById("searchInput").value.toUpperCase();
-            filteredData = allData.filter(item => 
-                (item.model + item.parts + (item.comment || '')).toUpperCase().includes(query)
-            );
-            window.renderTable(false);
-        }, 150);
-    };
+    }
 
     window.saveItem = function() {
         const id = document.getElementById('editIndex').value;
@@ -189,7 +166,7 @@
             comment: document.getElementById('comment').value.trim()
         };
 
-        if (!itemData.model || !itemData.parts) return alert("EL MODELO Y REPUESTO SON OBLIGATORIOS");
+        if (!itemData.model || !itemData.parts) return alert("COMPLETA LOS CAMPOS");
 
         if (id === "-1") {
             push(inventoryRef, itemData).then(() => window.clearInputs());
@@ -204,7 +181,7 @@
     };
 
     window.editItem = function(id) {
-        const item = allData.find(i => i.id === id);
+        const item = cacheData.find(i => i.id === id);
         document.getElementById('model').value = item.model;
         document.getElementById('parts').value = item.parts;
         document.getElementById('buyPrice').value = item.buyPrice;
@@ -217,10 +194,12 @@
     };
 
     window.deleteItem = function(id) { 
-        if(confirm("¿ELIMINAR ESTE REGISTRO?")) remove(ref(db, 'inventario/' + id)); 
+        if(confirm("¿ELIMINAR?")) remove(ref(db, 'inventario/' + id)); 
     };
 
-    window.clearInputs = function() { document.querySelectorAll('input:not([type=hidden])').forEach(i => i.value = ''); };
+    window.clearInputs = function() {
+        document.querySelectorAll('input:not([type=hidden])').forEach(i => i.value = '');
+    };
 
     window.toggleTheme = function() {
         const body = document.body;
