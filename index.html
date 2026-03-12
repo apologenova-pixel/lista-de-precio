@@ -3,71 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>INVENTARIO | TECNO JUMP</title>
+    <title>LISTA DE PRECIO | TECNO JUMP</title>
     <style>
         :root {
-            --primary: #0F172A; --accent: #2563EB; --bg: #F8FAFC;
+            --primary: #0F172A; --accent: #2563EB; --bg: #F1F5F9;
             --white: #FFFFFF; --text: #1E293B; --border: #E2E8F0;
+            --success: #059669; --warning: #D97706;
         }
         [data-theme="dark"] {
             --primary: #1E293B; --accent: #3B82F6; --bg: #0F172A; --white: #1E293B; --text: #F8FAFC; --border: #334155;
+            --success: #10B981;
         }
-        * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; text-transform: uppercase; }
-        .container { max-width: 1400px; margin: auto; }
-        .header { background: var(--primary); color: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .stats-card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); text-align: center; }
-        .stats-card span { font-size: 24px; font-weight: bold; color: var(--accent); display: block; }
-        .form-container { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
-        @media (min-width: 768px) { .form-container { grid-template-columns: repeat(2, 1fr); } }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 11px; font-weight: bold; color: #64748B; }
-        input { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 16px; }
-        .btn-main { border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; width: 100%; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
+        .container { max-width: 1200px; margin: auto; }
+        
+        /* Header */
+        .header { background: var(--primary); color: white; padding: 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 10px; font-weight: 800; }
+        .total-badge { font-size: 0.75rem; background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); }
+        
+        /* Formulario */
+        .form-container { background: var(--white); padding: 25px; border-radius: 16px; border: 1px solid var(--border); display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        @media (min-width: 768px) { .form-container { grid-template-columns: repeat(4, 1fr); } .span-2 { grid-column: span 2; } .span-full { grid-column: 1 / -1; } }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 10px; font-weight: 800; color: #64748B; margin-left: 4px; }
+        input { padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600; }
+        input:focus { border-color: var(--accent); outline: none; background: var(--white); }
+        
+        .btn-main { border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #btnAdd { background: var(--accent); }
-        #btnUpdate { background: #F59E0B; display: none; color: #000; }
-        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 2px solid var(--accent); font-size: 16px; position: sticky; top: 10px; z-index: 100; background: var(--white); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .table-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        #btnAdd:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        #btnUpdate { background: var(--warning); display: none; color: white; }
+
+        /* Buscador */
+        .search-container { display: flex; gap: 12px; margin-bottom: 20px; position: sticky; top: 15px; z-index: 100; }
+        .search-bar { flex: 1; padding: 16px 20px; border-radius: 12px; border: 2px solid var(--accent); font-size: 15px; font-weight: 600; background: var(--white); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .btn-view-all { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 0 25px; cursor: pointer; font-weight: 700; font-size: 11px; white-space: nowrap; border: 1px solid var(--border); }
+        .btn-view-all:hover { background: var(--accent); }
+
+        /* Tabla */
+        .table-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: none; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: rgba(0,0,0,0.02); padding: 15px; text-align: left; border-bottom: 2px solid var(--border); }
-        td { padding: 12px 15px; border-bottom: 1px solid var(--border); }
+        th { background: #F8FAFC; padding: 18px 15px; text-align: left; font-size: 11px; color: #64748B; border-bottom: 2px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; }
+        .price-tag { color: var(--success); font-weight: 800; font-size: 15px; }
+        .cost-tag { color: #64748B; font-size: 12px; }
+        
+        .actions-btn { padding: 8px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--bg); font-size: 14px; }
+        .actions-btn:hover { background: var(--white); border-color: var(--accent); }
+
         @media (max-width: 767px) {
-            table, thead, tbody, th, td, tr { display: block; }
-            thead { display: none; }
-            tr { background: var(--white); margin-bottom: 15px; border-radius: 12px; padding: 15px; border: 1px solid var(--border); }
-            td { border: none; padding: 8px 0; position: relative; padding-left: 45%; text-align: right; border-bottom: 1px solid var(--border); }
-            td:before { content: attr(data-label); position: absolute; left: 0; width: 40%; font-weight: bold; text-align: left; color: #64748B; }
-            td:last-child { border-bottom: none; display: flex; justify-content: flex-end; gap: 10px; padding-top: 15px; }
+            tr { display: block; padding: 15px; border-bottom: 8px solid var(--bg); }
+            td { display: flex; justify-content: space-between; align-items: center; border: none; padding: 8px 0; text-align: right; }
+            td:before { content: attr(data-label); font-weight: 800; font-size: 10px; color: #94A3B8; }
+            .price-tag { font-size: 18px; }
         }
-        .actions-btn { padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--bg); }
     </style>
 </head>
 <body data-theme="light">
 
 <div class="container">
     <div class="header">
-        <h1>TECNO JUMP</h1>
-        <button onclick="window.toggleTheme()" class="btn-main" style="width: auto; padding: 8px 15px;">🌓</button>
+        <h1>LISTA DE PRECIO | TECNO JUMP <span id="dbTotal" class="total-badge">0</span></h1>
+        <button onclick="window.toggleTheme()" class="btn-main" style="width: auto; padding: 10px;">🌓</button>
     </div>
-
-    <div class="stats-card">PRODUCTOS <span id="itemCount">0</span></div>
 
     <div class="form-container">
         <input type="hidden" id="editIndex" value="-1">
-        <div class="form-group"><label>MODELO</label><input type="text" id="model"></div>
-        <div class="form-group"><label>REPUESTO</label><input type="text" id="parts"></div>
-        <div class="form-group"><label>COSTO</label><input type="number" id="buyPrice" placeholder="0"></div>
-        <div class="form-group"><label>VENTA</label><input type="number" id="sellPrice" placeholder="0"></div>
-        <div class="form-group" style="grid-column: 1 / -1;"><label>NOTA</label><input type="text" id="comment"></div>
-        <div class="form-group" style="grid-column: 1 / -1;">
-            <button class="btn-main" id="btnAdd" onclick="window.saveItem()">REGISTRAR</button>
-            <button class="btn-main" id="btnUpdate" onclick="window.saveItem()">GUARDAR CAMBIOS</button>
+        <div class="form-group span-2"><label>MODELO DEL DISPOSITIVO</label><input type="text" id="model" placeholder="EJ: IPHONE 13 PRO"></div>
+        <div class="form-group span-2"><label>TIPO DE REPUESTO</label><input type="text" id="parts" placeholder="EJ: PANTALLA OLED"></div>
+        <div class="form-group"><label>COSTO NETO</label><input type="number" id="buyPrice" placeholder="$ 0"></div>
+        <div class="form-group"><label>PRECIO VENTA</label><input type="number" id="sellPrice" placeholder="$ 0"></div>
+        <div class="form-group span-2"><label>OBSERVACIONES / NOTAS</label><input type="text" id="comment" placeholder="..."></div>
+        <div class="form-group span-full">
+            <button class="btn-main" id="btnAdd" onclick="window.saveItem()">📦 REGISTRAR PRODUCTO</button>
+            <button class="btn-main" id="btnUpdate" onclick="window.saveItem()">💾 ACTUALIZAR DATOS</button>
         </div>
     </div>
 
-    <input type="text" id="searchInput" class="search-bar" placeholder="BUSCAR PRODUCTO...">
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 BUSCAR POR MODELO O REPUESTO...">
+        <button class="btn-view-all" id="btnShowAll" onclick="window.showAllItems()">VER TODO</button>
+    </div>
 
-    <div class="table-card">
+    <div class="table-card" id="tableCard">
         <table>
             <thead>
                 <tr>
@@ -97,63 +117,69 @@
     const db = getDatabase(app);
     const inventoryRef = ref(db, 'inventario');
     
-    let cacheData = []; // Los datos se guardan aquí para búsqueda instantánea
+    let cacheData = [];
     let filteredData = [];
-    let searchTimer;
+    let isShowingAll = false;
 
-    // Sincronización eficiente con Firebase
     onValue(inventoryRef, (snapshot) => {
         const data = snapshot.val() || {};
-        // Convertimos a array y pre-procesamos el texto para que la búsqueda no sea pesada
         cacheData = Object.keys(data).map(id => ({
             id,
             ...data[id],
             searchIndex: `${data[id].model} ${data[id].parts} ${data[id].comment || ''}`.toUpperCase()
         })).reverse();
         
-        document.getElementById('itemCount').innerText = cacheData.length;
+        document.getElementById('dbTotal').innerText = cacheData.length + " ITEMS";
+        
+        if (isShowingAll) window.showAllItems();
+        else applySearch();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', () => {
+        isShowingAll = false;
         applySearch();
     });
 
-    // Función de búsqueda optimizada (Debounce)
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => {
-            applySearch();
-        }, 200); // Espera 200ms después de escribir para no trabar el navegador
-    });
-
     function applySearch() {
-        const query = document.getElementById('searchInput').value.toUpperCase();
-        filteredData = cacheData.filter(item => item.searchIndex.includes(query));
+        const query = document.getElementById('searchInput').value.trim().toUpperCase();
+        const tableCard = document.getElementById('tableCard');
+        
+        if (query === "") {
+            filteredData = [];
+            tableCard.style.display = 'none';
+        } else {
+            filteredData = cacheData.filter(item => item.searchIndex.includes(query));
+            tableCard.style.display = 'block';
+        }
         renderTable();
     }
 
+    window.showAllItems = function() {
+        isShowingAll = true;
+        document.getElementById('searchInput').value = "";
+        filteredData = [...cacheData];
+        document.getElementById('tableCard').style.display = 'block';
+        renderTable();
+    };
+
     function renderTable() {
         const tableBody = document.getElementById('tableBody');
-        const fragment = document.createDocumentFragment();
         tableBody.innerHTML = '';
-
-        // Solo mostramos los primeros 100 resultados para mantener la velocidad
-        // Si necesitas ver más, la búsqueda filtrará el resto
-        const limit = Math.min(filteredData.length, 100);
-
-        for(let i = 0; i < limit; i++) {
-            const item = filteredData[i];
+        
+        filteredData.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td data-label="MODELO">${(item.model || '').toUpperCase()}</td>
                 <td data-label="REPUESTO">${(item.parts || '').toUpperCase()}</td>
-                <td data-label="COSTO">$${Number(item.buyPrice || 0).toLocaleString('es-CL')}</td>
-                <td data-label="VENTA">$${Number(item.sellPrice || 0).toLocaleString('es-CL')}</td>
-                <td data-label="NOTAS">${(item.comment || '-').toUpperCase()}</td>
+                <td data-label="COSTO"><span class="cost-tag">$${Number(item.buyPrice || 0).toLocaleString('es-CL')}</span></td>
+                <td data-label="VENTA"><span class="price-tag">$${Number(item.sellPrice || 0).toLocaleString('es-CL')}</span></td>
+                <td data-label="NOTAS" style="color:#94A3B8; font-size:11px;">${(item.comment || '-').toUpperCase()}</td>
                 <td data-label="ACCIONES">
                     <button class="actions-btn" onclick="window.editItem('${item.id}')">✏️</button>
                     <button class="actions-btn" onclick="window.deleteItem('${item.id}')">🗑️</button>
                 </td>`;
-            fragment.appendChild(row);
-        }
-        tableBody.appendChild(fragment);
+            tableBody.appendChild(row);
+        });
     }
 
     window.saveItem = function() {
@@ -166,14 +192,14 @@
             comment: document.getElementById('comment').value.trim()
         };
 
-        if (!itemData.model || !itemData.parts) return alert("COMPLETA LOS CAMPOS");
+        if (!itemData.model || !itemData.parts) return alert("POR FAVOR, INGRESA MODELO Y REPUESTO");
 
         if (id === "-1") {
             push(inventoryRef, itemData).then(() => window.clearInputs());
         } else { 
             set(ref(db, 'inventario/' + id), itemData).then(() => {
                 document.getElementById('editIndex').value = "-1";
-                document.getElementById('btnAdd').style.display = 'block';
+                document.getElementById('btnAdd').style.display = 'flex';
                 document.getElementById('btnUpdate').style.display = 'none';
                 window.clearInputs();
             });
@@ -189,12 +215,12 @@
         document.getElementById('comment').value = item.comment || '';
         document.getElementById('editIndex').value = id;
         document.getElementById('btnAdd').style.display = 'none';
-        document.getElementById('btnUpdate').style.display = 'block';
+        document.getElementById('btnUpdate').style.display = 'flex';
         window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
     window.deleteItem = function(id) { 
-        if(confirm("¿ELIMINAR?")) remove(ref(db, 'inventario/' + id)); 
+        if(confirm("¿ELIMINAR ESTE PRODUCTO DE LA LISTA?")) remove(ref(db, 'inventario/' + id)); 
     };
 
     window.clearInputs = function() {
