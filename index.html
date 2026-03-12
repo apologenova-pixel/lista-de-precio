@@ -228,9 +228,33 @@
     };
     
     window.filterTable = function() {
+       // REEMPLAZA TU FUNCIÓN filterTable POR ESTA PARA VELOCIDAD PERMANENTE
+let debounceTimer;
+window.filterTable = function() {
+    // 1. Cancelamos la ejecución anterior si escribes rápido (Debounce)
+    clearTimeout(debounceTimer);
+    
+    debounceTimer = setTimeout(() => {
         const filter = document.getElementById("searchInput").value.toUpperCase();
-        const rows = document.querySelectorAll("#tableBody tr");
-        rows.forEach(row => row.style.display = row.innerText.toUpperCase().includes(filter) ? "" : "none");
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.rows;
+        
+        // 2. Usamos requestAnimationFrame para que el navegador no se trabe visualmente
+        requestAnimationFrame(() => {
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                // 3. textContent es mucho más rápido que innerText para miles de datos
+                const text = row.textContent || row.innerText;
+                
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        });
+    }, 150); // Espera 150ms después de que dejas de escribir
+};);
     };
 
     window.clearInputs = function() {
@@ -247,4 +271,5 @@
     if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 </script>
 </body>
+
 </html>
