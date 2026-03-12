@@ -23,78 +23,39 @@
         }
 
         .container { max-width: 1400px; margin: auto; }
-        
-        .header { 
-            background: var(--primary); color: white; padding: 15px; 
-            border-radius: 12px; display: flex; justify-content: space-between; 
-            align-items: center; margin-bottom: 10px; 
-        }
-
-        .stats-card {
-            background: var(--white); padding: 15px; border-radius: 12px;
-            margin-bottom: 15px; border: 1px solid var(--border);
-            text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+        .header { background: var(--primary); color: white; padding: 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .stats-card { background: var(--white); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); text-align: center; }
         .stats-card span { font-size: 24px; font-weight: bold; color: var(--accent); display: block; }
 
-        .form-container { 
-            background: var(--white); padding: 20px; border-radius: 12px; 
-            border: 1px solid var(--border); display: grid; 
-            grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; 
-        }
-
-        @media (min-width: 768px) {
-            .form-container { grid-template-columns: repeat(2, 1fr); }
-        }
+        .form-container { background: var(--white); padding: 20px; border-radius: 12px; border: 1px solid var(--border); display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
+        @media (min-width: 768px) { .form-container { grid-template-columns: repeat(2, 1fr); } }
 
         .form-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 11px; font-weight: bold; color: #64748B; }
-        
-        input { 
-            padding: 12px; border: 1px solid var(--border); border-radius: 8px; 
-            background: var(--bg); color: var(--text); font-size: 16px; 
-        }
+        input { padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 16px; }
 
-        .btn-main { 
-            border: none; padding: 15px; border-radius: 8px; 
-            cursor: pointer; font-weight: bold; color: white; width: 100%;
-        }
+        .btn-main { border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; width: 100%; }
         #btnAdd { background: var(--accent); }
         #btnUpdate { background: var(--warning); display: none; color: #000; }
 
-        .search-bar { 
-            width: 100%; padding: 15px; margin-bottom: 20px; 
-            border-radius: 8px; border: 1px solid var(--border); font-size: 16px;
-            position: sticky; top: 10px; z-index: 100; background: var(--white);
-        }
+        .search-bar { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--border); font-size: 16px; position: sticky; top: 10px; z-index: 100; background: var(--white); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 
-        /* Responsive Table */
+        .table-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        th { background: rgba(0,0,0,0.02); padding: 15px; text-align: left; border-bottom: 2px solid var(--border); }
+        td { padding: 12px 15px; border-bottom: 1px solid var(--border); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
         @media (max-width: 767px) {
             table, thead, tbody, th, td, tr { display: block; }
-            thead tr { position: absolute; top: -9999px; left: -9999px; }
-            tr { 
-                background: var(--white); margin-bottom: 15px; border-radius: 12px; 
-                padding: 15px; border: 1px solid var(--border);
-            }
-            td { 
-                border: none; padding: 8px 0; position: relative; 
-                padding-left: 45%; text-align: right; border-bottom: 1px solid var(--border);
-            }
-            td:before { 
-                content: attr(data-label); position: absolute; left: 0; 
-                width: 40%; font-weight: bold; text-align: left; color: #64748B;
-            }
+            thead { display: none; }
+            tr { background: var(--white); margin-bottom: 15px; border-radius: 12px; padding: 15px; border: 1px solid var(--border); }
+            td { border: none; padding: 8px 0; position: relative; padding-left: 45%; text-align: right; border-bottom: 1px solid var(--border); white-space: normal; }
+            td:before { content: attr(data-label); position: absolute; left: 0; width: 40%; font-weight: bold; text-align: left; color: #64748B; }
             td:last-child { border-bottom: none; display: flex; justify-content: flex-end; gap: 10px; padding-top: 15px; }
         }
 
-        @media (min-width: 768px) {
-            .table-card { background: var(--white); border-radius: 12px; overflow: auto; border: 1px solid var(--border); }
-            table { width: 100%; border-collapse: collapse; }
-            th { background: rgba(0,0,0,0.02); padding: 15px; text-align: left; border-bottom: 2px solid var(--border); }
-            td { padding: 15px; border-bottom: 1px solid var(--border); }
-        }
-
         .actions-btn { padding: 10px 15px; border-radius: 6px; border: 1px solid var(--border); cursor: pointer; background: var(--bg); }
+        .loading-overlay { text-align: center; padding: 20px; color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body data-theme="light">
@@ -105,10 +66,7 @@
         <button onclick="window.toggleTheme()" class="btn-main" style="width: auto; padding: 8px 15px;">🌓</button>
     </div>
 
-    <div class="stats-card">
-        PRODUCTOS REGISTRADOS
-        <span id="itemCount">0</span>
-    </div>
+    <div class="stats-card">PRODUCTOS REGISTRADOS <span id="itemCount">0</span></div>
 
     <div class="form-container">
         <input type="hidden" id="editIndex" value="-1">
@@ -123,17 +81,18 @@
         </div>
     </div>
 
-    <input type="text" id="searchInput" class="search-bar" oninput="window.filterTable()" placeholder="BUSCAR PRODUCTO O NOTA...">
+    <input type="text" id="searchInput" class="search-bar" oninput="window.handleSearch()" placeholder="BUSCAR PRODUCTO O NOTA...">
 
     <div class="table-card">
         <table>
             <thead>
                 <tr>
-                    <th>MODELO</th><th>REPUESTO</th><th>COSTO</th><th>VENTA</th><th>NOTAS</th><th>ACCIONES</th>
+                    <th style="width: 25%;">MODELO</th><th style="width: 20%;">REPUESTO</th><th style="width: 15%;">COSTO</th><th style="width: 15%;">VENTA</th><th style="width: 15%;">NOTAS</th><th style="width: 10%;">ACCIONES</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
+        <div id="loadingMsg" class="loading-overlay" style="display:none;">CARGANDO MÁS PRODUCTOS...</div>
     </div>
 </div>
 
@@ -154,35 +113,70 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const inventoryRef = ref(db, 'inventario');
-    let inventoryData = {};
+    
+    let allData = []; // Array optimizado para búsqueda rápida
+    let filteredData = [];
+    let itemsToShow = 100; // Carga inicial
+    let debounceTimer;
 
     onValue(inventoryRef, (snapshot) => {
-        inventoryData = snapshot.val() || {};
-        window.renderTable();
-        document.getElementById('itemCount').innerText = Object.keys(inventoryData).length;
+        const rawData = snapshot.val() || {};
+        allData = Object.keys(rawData).map(id => ({ id, ...rawData[id] })).reverse();
+        document.getElementById('itemCount').innerText = allData.length;
+        window.handleSearch(); // Inicia renderizado con filtro actual
     });
 
-    window.renderTable = function() {
+    window.renderTable = function(append = false) {
         const tableBody = document.getElementById('tableBody');
-        let html = '';
+        const loadingMsg = document.getElementById('loadingMsg');
+        
+        if (!append) {
+            tableBody.innerHTML = '';
+            itemsToShow = 100;
+        }
 
-        Object.keys(inventoryData).forEach((id) => {
-            const item = inventoryData[id];
-            html += `
-                <tr>
-                    <td data-label="MODELO">${(item.model || '').toUpperCase()}</td>
-                    <td data-label="REPUESTO">${(item.parts || '').toUpperCase()}</td>
-                    <td data-label="COSTO">$${Number(item.buyPrice || 0).toLocaleString('es-CL')}</td>
-                    <td data-label="VENTA">$${Number(item.sellPrice || 0).toLocaleString('es-CL')}</td>
-                    <td data-label="NOTAS">${(item.comment || '-').toUpperCase()}</td>
-                    <td data-label="ACCIONES">
-                        <button class="actions-btn" onclick="window.editItem('${id}')">✏️</button>
-                        <button class="actions-btn" onclick="window.deleteItem('${id}')">🗑️</button>
-                    </td>
-                </tr>`;
-        });
-        tableBody.innerHTML = html;
-        window.filterTable(); // Aplicar filtro actual tras el renderizado
+        const fragment = document.createDocumentFragment();
+        const start = append ? tableBody.children.length : 0;
+        const end = Math.min(start + 100, filteredData.length);
+
+        for (let i = start; i < end; i++) {
+            const item = filteredData[i];
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td data-label="MODELO">${(item.model || '').toUpperCase()}</td>
+                <td data-label="REPUESTO">${(item.parts || '').toUpperCase()}</td>
+                <td data-label="COSTO">$${Number(item.buyPrice || 0).toLocaleString('es-CL')}</td>
+                <td data-label="VENTA">$${Number(item.sellPrice || 0).toLocaleString('es-CL')}</td>
+                <td data-label="NOTAS">${(item.comment || '-').toUpperCase()}</td>
+                <td data-label="ACCIONES">
+                    <button class="actions-btn" onclick="window.editItem('${item.id}')">✏️</button>
+                    <button class="actions-btn" onclick="window.deleteItem('${item.id}')">🗑️</button>
+                </td>`;
+            fragment.appendChild(row);
+        }
+
+        tableBody.appendChild(fragment);
+        loadingMsg.style.display = (end < filteredData.length) ? 'block' : 'none';
+    };
+
+    // Carga infinita al hacer scroll
+    window.onscroll = function() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            if (tableBody.children.length < filteredData.length) {
+                window.renderTable(true);
+            }
+        }
+    };
+
+    window.handleSearch = function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const query = document.getElementById("searchInput").value.toUpperCase();
+            filteredData = allData.filter(item => 
+                (item.model + item.parts + (item.comment || '')).toUpperCase().includes(query)
+            );
+            window.renderTable(false);
+        }, 150);
     };
 
     window.saveItem = function() {
@@ -198,22 +192,19 @@
         if (!itemData.model || !itemData.parts) return alert("EL MODELO Y REPUESTO SON OBLIGATORIOS");
 
         if (id === "-1") {
-            push(inventoryRef, itemData)
-                .then(() => window.clearInputs())
-                .catch(err => alert("Error: " + err.message));
+            push(inventoryRef, itemData).then(() => window.clearInputs());
         } else { 
-            set(ref(db, 'inventario/' + id), itemData)
-                .then(() => {
-                    document.getElementById('editIndex').value = "-1";
-                    document.getElementById('btnAdd').style.display = 'block';
-                    document.getElementById('btnUpdate').style.display = 'none';
-                    window.clearInputs();
-                });
+            set(ref(db, 'inventario/' + id), itemData).then(() => {
+                document.getElementById('editIndex').value = "-1";
+                document.getElementById('btnAdd').style.display = 'block';
+                document.getElementById('btnUpdate').style.display = 'none';
+                window.clearInputs();
+            });
         }
     };
 
     window.editItem = function(id) {
-        const item = inventoryData[id];
+        const item = allData.find(i => i.id === id);
         document.getElementById('model').value = item.model;
         document.getElementById('parts').value = item.parts;
         document.getElementById('buyPrice').value = item.buyPrice;
@@ -228,28 +219,8 @@
     window.deleteItem = function(id) { 
         if(confirm("¿ELIMINAR ESTE REGISTRO?")) remove(ref(db, 'inventario/' + id)); 
     };
-    
-    // --- OPTIMIZACIÓN DE BÚSQUEDA PARA 10,000 PRODUCTOS ---
-    let debounceTimer;
-    window.filterTable = function() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const filter = document.getElementById("searchInput").value.toUpperCase();
-            const rows = document.getElementById("tableBody").rows;
-            
-            requestAnimationFrame(() => {
-                for (let i = 0; i < rows.length; i++) {
-                    const row = rows[i];
-                    const text = row.textContent || row.innerText;
-                    row.style.display = text.toUpperCase().includes(filter) ? "" : "none";
-                }
-            });
-        }, 150);
-    };
 
-    window.clearInputs = function() {
-        document.querySelectorAll('input:not([type=hidden])').forEach(i => i.value = '');
-    };
+    window.clearInputs = function() { document.querySelectorAll('input:not([type=hidden])').forEach(i => i.value = ''); };
 
     window.toggleTheme = function() {
         const body = document.body;
