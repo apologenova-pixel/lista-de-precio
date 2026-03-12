@@ -4,98 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LISTA DE PRECIO | TECNO JUMP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0F172A; --accent: #2563EB; --bg: #F1F5F9;
             --white: #FFFFFF; --text: #1E293B; --border: #E2E8F0;
-            --success: #059669; --warning: #D97706;
+            --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
+            /* Colores de Marca */
+            --apple-color: #1E293B;
+            --samsung-color: #034EA2;
+            --motorola-color: #5D2D91;
+            --generic-color: #64748B;
         }
         [data-theme="dark"] {
-            --primary: #1E293B; --accent: #3B82F6; --bg: #0F172A; --white: #1E293B; --text: #F8FAFC; --border: #334155;
-            --success: #10B981;
+            --primary: #1E293B; --accent: #60A5FA; --bg: #0F172A; --white: #1E293B; --text: #F8FAFC; --border: #334155;
         }
-        * { box-sizing: border-box; transition: all 0.2s ease; }
-        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 10px; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
-        .container { max-width: 1200px; margin: auto; }
+        * { box-sizing: border-box; transition: all 0.2s ease; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 10px; margin: 0; text-transform: uppercase; letter-spacing: 0.3px; }
+        .container { max-width: 1000px; margin: auto; padding-bottom: 40px; }
         
-        /* Header */
-        .header { background: var(--primary); color: white; padding: 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .header h1 { font-size: 1.1rem; margin: 0; display: flex; align-items: center; gap: 10px; font-weight: 800; }
-        .total-badge { font-size: 0.75rem; background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); }
+        /* Header con el nuevo nombre */
+        .header { background: var(--primary); color: white; padding: 15px 20px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h1 { font-size: 13px; margin: 0; font-weight: 800; letter-spacing: 1px; }
         
-        /* Formulario */
-        .form-container { background: var(--white); padding: 25px; border-radius: 16px; border: 1px solid var(--border); display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .form-container { background: var(--white); padding: 20px; border-radius: 20px; border: 1px solid var(--border); display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 25px; }
         @media (min-width: 768px) { .form-container { grid-template-columns: repeat(4, 1fr); } .span-2 { grid-column: span 2; } .span-full { grid-column: 1 / -1; } }
-        .form-group { display: flex; flex-direction: column; gap: 6px; }
-        label { font-size: 10px; font-weight: 800; color: #64748B; margin-left: 4px; }
-        input { padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600; }
-        input:focus { border-color: var(--accent); outline: none; background: var(--white); }
         
-        .btn-main { border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        label { font-size: 9px; font-weight: 800; color: #64748B; margin-bottom: 4px; display: block; }
+        input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 13px; font-weight: 600; }
+        
+        .btn-main { border: none; padding: 14px; border-radius: 10px; cursor: pointer; font-weight: 800; color: white; font-size: 12px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #btnAdd { background: var(--accent); }
-        #btnAdd:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        #btnUpdate { background: var(--warning); display: none; color: white; }
+        #btnUpdate { background: var(--warning); color: #000; display: none; }
 
-        /* Buscador */
-        .search-container { display: flex; gap: 12px; margin-bottom: 20px; position: sticky; top: 15px; z-index: 100; }
-        .search-bar { flex: 1; padding: 16px 20px; border-radius: 12px; border: 2px solid var(--accent); font-size: 15px; font-weight: 600; background: var(--white); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-        .btn-view-all { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 0 25px; cursor: pointer; font-weight: 700; font-size: 11px; white-space: nowrap; border: 1px solid var(--border); }
-        .btn-view-all:hover { background: var(--accent); }
+        .search-bar { width: 100%; padding: 16px; border-radius: 14px; border: 2px solid var(--border); font-size: 14px; font-weight: 600; background: var(--white); margin-bottom: 20px; outline: none; }
 
-        /* Tabla */
-        .table-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); display: none; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #F8FAFC; padding: 18px 15px; text-align: left; font-size: 11px; color: #64748B; border-bottom: 2px solid var(--border); }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; }
-        .price-tag { color: var(--success); font-weight: 800; font-size: 15px; }
-        .cost-tag { color: #64748B; font-size: 12px; }
+        .results-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        @media (min-width: 768px) { .results-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .product-card { background: var(--white); border-radius: 18px; padding: 15px; position: relative; border: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
         
-        .actions-btn { padding: 8px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; background: var(--bg); font-size: 14px; }
-        .actions-btn:hover { background: var(--white); border-color: var(--accent); }
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
 
-        @media (max-width: 767px) {
-            tr { display: block; padding: 15px; border-bottom: 8px solid var(--bg); }
-            td { display: flex; justify-content: space-between; align-items: center; border: none; padding: 8px 0; text-align: right; }
-            td:before { content: attr(data-label); font-weight: 800; font-size: 10px; color: #94A3B8; }
-            .price-tag { font-size: 18px; }
+        /* Etiqueta con sombra y colores de marca */
+        .card-part-tag { 
+            font-size: 10px; 
+            font-weight: 800; 
+            color: white; 
+            padding: 6px 12px; 
+            border-radius: 8px; 
+            box-shadow: inset 0 -2px 0 rgba(0,0,0,0.2), 0 4px 6px -1px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
+
+        /* Precio a la derecha */
+        .price-right { text-align: right; }
+        .price-val { font-size: 20px; font-weight: 800; color: var(--success); display: block; }
+        .price-label { font-size: 8px; font-weight: 700; color: #94A3B8; }
+
+        .card-model { font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 15px; }
+        
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 12px; }
+        .cost-val { font-size: 10px; font-weight: 700; color: #94A3B8; }
+
+        .card-actions { display: flex; gap: 6px; }
+        .btn-action { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); background: transparent; cursor: pointer; font-size: 10px; font-weight: 700; color: var(--text); }
+
+        /* Clases de marca para las etiquetas */
+        .brand-apple .card-part-tag { background: var(--apple-color); }
+        .brand-samsung .card-part-tag { background: var(--samsung-color); }
+        .brand-motorola .card-part-tag { background: var(--motorola-color); }
+        .brand-generic .card-part-tag { background: var(--generic-color); }
     </style>
 </head>
 <body data-theme="light">
 
 <div class="container">
     <div class="header">
-        <h1>LISTA DE PRECIO | TECNO JUMP <span id="dbTotal" class="total-badge">0</span></h1>
-        <button onclick="window.toggleTheme()" class="btn-main" style="width: auto; padding: 10px;">🌓</button>
+        <h1>LISTA DE PRECIO | TECNO JUMP <span id="dbTotal" style="opacity: 0.6; font-size: 10px; margin-left: 10px;">0 ITEMS</span></h1>
+        <button onclick="window.toggleTheme()" style="background:none; border:none; color:white; cursor:pointer; font-size:16px;">🌓</button>
     </div>
 
     <div class="form-container">
         <input type="hidden" id="editIndex" value="-1">
-        <div class="form-group span-2"><label>MODELO DEL DISPOSITIVO</label><input type="text" id="model" placeholder="EJ: IPHONE 13 PRO"></div>
-        <div class="form-group span-2"><label>TIPO DE REPUESTO</label><input type="text" id="parts" placeholder="EJ: PANTALLA OLED"></div>
-        <div class="form-group"><label>COSTO NETO</label><input type="number" id="buyPrice" placeholder="$ 0"></div>
-        <div class="form-group"><label>PRECIO VENTA</label><input type="number" id="sellPrice" placeholder="$ 0"></div>
-        <div class="form-group span-2"><label>OBSERVACIONES / NOTAS</label><input type="text" id="comment" placeholder="..."></div>
+        <div class="form-group span-2"><label>MODELO</label><input type="text" id="model" placeholder="EJ. IPHONE 15 PRO"></div>
+        <div class="form-group span-2"><label>TIPO DE REPUESTO</label><input type="text" id="parts" placeholder="EJ. CAMBIO DE PANTALLA"></div>
+        <div class="form-group"><label>COSTO</label><input type="number" id="buyPrice" placeholder="0"></div>
+        <div class="form-group"><label>VENTA</label><input type="number" id="sellPrice" placeholder="0"></div>
+        <div class="form-group span-full"><label>NOTAS</label><input type="text" id="comment" placeholder="..."></div>
         <div class="form-group span-full">
-            <button class="btn-main" id="btnAdd" onclick="window.saveItem()">📦 REGISTRAR PRODUCTO</button>
-            <button class="btn-main" id="btnUpdate" onclick="window.saveItem()">💾 ACTUALIZAR DATOS</button>
+            <button class="btn-main" id="btnAdd" onclick="window.saveItem()">AÑADIR A LISTA</button>
+            <button class="btn-main" id="btnUpdate" onclick="window.saveItem()">GUARDAR CAMBIOS</button>
         </div>
     </div>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="🔍 BUSCAR POR MODELO O REPUESTO...">
-        <button class="btn-view-all" id="btnShowAll" onclick="window.showAllItems()">VER TODO</button>
-    </div>
+    <input type="text" id="searchInput" class="search-bar" placeholder="🔍 BUSCAR REPUESTO O MODELO...">
 
-    <div class="table-card" id="tableCard">
-        <table>
-            <thead>
-                <tr>
-                    <th>MODELO</th><th>REPUESTO</th><th>COSTO</th><th>VENTA</th><th>NOTAS</th><th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+    <div id="resultsWrapper" style="display:none;">
+        <div id="resultsGrid" class="results-grid"></div>
     </div>
 </div>
 
@@ -118,85 +125,75 @@
     const inventoryRef = ref(db, 'inventario');
     
     let cacheData = [];
-    let filteredData = [];
-    let isShowingAll = false;
 
     onValue(inventoryRef, (snapshot) => {
         const data = snapshot.val() || {};
         cacheData = Object.keys(data).map(id => ({
-            id,
-            ...data[id],
-            searchIndex: `${data[id].model} ${data[id].parts} ${data[id].comment || ''}`.toUpperCase()
+            id, ...data[id],
+            searchIndex: `${data[id].model} ${data[id].parts}`.toUpperCase()
         })).reverse();
-        
         document.getElementById('dbTotal').innerText = cacheData.length + " ITEMS";
-        
-        if (isShowingAll) window.showAllItems();
-        else applySearch();
-    });
-
-    document.getElementById('searchInput').addEventListener('input', () => {
-        isShowingAll = false;
         applySearch();
     });
 
+    document.getElementById('searchInput').addEventListener('input', applySearch);
+
     function applySearch() {
         const query = document.getElementById('searchInput').value.trim().toUpperCase();
-        const tableCard = document.getElementById('tableCard');
-        
-        if (query === "") {
-            filteredData = [];
-            tableCard.style.display = 'none';
-        } else {
-            filteredData = cacheData.filter(item => item.searchIndex.includes(query));
-            tableCard.style.display = 'block';
+        const wrapper = document.getElementById('resultsWrapper');
+        if (query === "") { wrapper.style.display = 'none'; } 
+        else { 
+            const filtered = cacheData.filter(item => item.searchIndex.includes(query));
+            renderCards(filtered);
+            wrapper.style.display = 'block';
         }
-        renderTable();
     }
 
-    window.showAllItems = function() {
-        isShowingAll = true;
-        document.getElementById('searchInput').value = "";
-        filteredData = [...cacheData];
-        document.getElementById('tableCard').style.display = 'block';
-        renderTable();
-    };
+    function renderCards(data) {
+        const grid = document.getElementById('resultsGrid');
+        grid.innerHTML = '';
+        data.forEach(item => {
+            const m = item.model.toUpperCase();
+            let bClass = 'brand-generic';
+            if(m.includes('IPHONE') || m.includes('APPLE')) bClass = 'brand-apple';
+            else if(m.includes('SAMSUNG')) bClass = 'brand-samsung';
+            else if(m.includes('MOTO')) bClass = 'brand-motorola';
 
-    function renderTable() {
-        const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = '';
-        
-        filteredData.forEach(item => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td data-label="MODELO">${(item.model || '').toUpperCase()}</td>
-                <td data-label="REPUESTO">${(item.parts || '').toUpperCase()}</td>
-                <td data-label="COSTO"><span class="cost-tag">$${Number(item.buyPrice || 0).toLocaleString('es-CL')}</span></td>
-                <td data-label="VENTA"><span class="price-tag">$${Number(item.sellPrice || 0).toLocaleString('es-CL')}</span></td>
-                <td data-label="NOTAS" style="color:#94A3B8; font-size:11px;">${(item.comment || '-').toUpperCase()}</td>
-                <td data-label="ACCIONES">
-                    <button class="actions-btn" onclick="window.editItem('${item.id}')">✏️</button>
-                    <button class="actions-btn" onclick="window.deleteItem('${item.id}')">🗑️</button>
-                </td>`;
-            tableBody.appendChild(row);
+            const card = document.createElement('div');
+            card.className = `product-card ${bClass}`;
+            card.innerHTML = `
+                <div class="card-top">
+                    <div class="card-part-tag">${item.parts}</div>
+                    <div class="price-right">
+                        <span class="price-label">VENTA</span>
+                        <span class="price-val">$${Number(item.sellPrice).toLocaleString('es-CL')}</span>
+                    </div>
+                </div>
+                <span class="card-model">${item.model}</span>
+                <div class="card-footer">
+                    <span class="cost-val">COSTO: $${Number(item.buyPrice).toLocaleString('es-CL')}</span>
+                    <div class="card-actions">
+                        <button class="btn-action" onclick="window.editItem('${item.id}')">EDITAR</button>
+                        <button class="btn-action" style="color:var(--danger)" onclick="window.deleteItem('${item.id}')">🗑️</button>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
         });
     }
 
     window.saveItem = function() {
         const id = document.getElementById('editIndex').value;
         const itemData = {
-            model: document.getElementById('model').value.trim(),
-            parts: document.getElementById('parts').value.trim(),
+            model: document.getElementById('model').value.toUpperCase(),
+            parts: document.getElementById('parts').value.toUpperCase(),
             buyPrice: parseFloat(document.getElementById('buyPrice').value) || 0,
             sellPrice: parseFloat(document.getElementById('sellPrice').value) || 0,
-            comment: document.getElementById('comment').value.trim()
+            comment: document.getElementById('comment').value.toUpperCase()
         };
-
-        if (!itemData.model || !itemData.parts) return alert("POR FAVOR, INGRESA MODELO Y REPUESTO");
-
-        if (id === "-1") {
-            push(inventoryRef, itemData).then(() => window.clearInputs());
-        } else { 
+        if (!itemData.model || !itemData.parts) return;
+        if (id === "-1") { push(inventoryRef, itemData).then(() => window.clearInputs()); } 
+        else { 
             set(ref(db, 'inventario/' + id), itemData).then(() => {
                 document.getElementById('editIndex').value = "-1";
                 document.getElementById('btnAdd').style.display = 'flex';
@@ -219,21 +216,14 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     };
 
-    window.deleteItem = function(id) { 
-        if(confirm("¿ELIMINAR ESTE PRODUCTO DE LA LISTA?")) remove(ref(db, 'inventario/' + id)); 
-    };
-
-    window.clearInputs = function() {
-        document.querySelectorAll('input:not([type=hidden])').forEach(i => i.value = '');
-    };
-
+    window.deleteItem = function(id) { if(confirm("¿ELIMINAR ESTE REGISTRO?")) remove(ref(db, 'inventario/' + id)); };
+    window.clearInputs = function() { document.querySelectorAll('input:not([type=hidden])').forEach(i => i.value = ''); };
     window.toggleTheme = function() {
         const body = document.body;
         const newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
         body.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
     };
-
     if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 </script>
 </body>
