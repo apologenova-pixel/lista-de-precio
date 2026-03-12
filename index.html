@@ -65,9 +65,10 @@
         .search-bar { 
             width: 100%; padding: 15px; margin-bottom: 20px; 
             border-radius: 8px; border: 1px solid var(--border); font-size: 16px;
+            position: sticky; top: 10px; z-index: 100; background: var(--white);
         }
 
-        /* Responsive Table to Cards */
+        /* Responsive Table */
         @media (max-width: 767px) {
             table, thead, tbody, th, td, tr { display: block; }
             thead tr { position: absolute; top: -9999px; left: -9999px; }
@@ -122,7 +123,7 @@
         </div>
     </div>
 
-    <input type="text" id="searchInput" class="search-bar" onkeyup="window.filterTable()" placeholder="BUSCAR PRODUCTO O NOTA...">
+    <input type="text" id="searchInput" class="search-bar" oninput="window.filterTable()" placeholder="BUSCAR PRODUCTO O NOTA...">
 
     <div class="table-card">
         <table>
@@ -140,7 +141,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // CONFIGURACIÓN ACTUALIZADA CON TU NUEVA URL
     const firebaseConfig = {
         apiKey: "AIzaSyBm0Z1RWKsit3tp1TLCWtMYAsn2HkqMs0g",
         authDomain: "tecnojump-4f64b.firebaseapp.com",
@@ -156,7 +156,6 @@
     const inventoryRef = ref(db, 'inventario');
     let inventoryData = {};
 
-    // Sincronizar datos y actualizar contador
     onValue(inventoryRef, (snapshot) => {
         inventoryData = snapshot.val() || {};
         window.renderTable();
@@ -165,22 +164,25 @@
 
     window.renderTable = function() {
         const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = '';
+        let html = '';
 
         Object.keys(inventoryData).forEach((id) => {
             const item = inventoryData[id];
-            const row = tableBody.insertRow();
-            row.innerHTML = `
-                <td data-label="MODELO">${(item.model || '').toUpperCase()}</td>
-                <td data-label="REPUESTO">${(item.parts || '').toUpperCase()}</td>
-                <td data-label="COSTO">$${Number(item.buyPrice || 0).toLocaleString('es-CL')}</td>
-                <td data-label="VENTA">$${Number(item.sellPrice || 0).toLocaleString('es-CL')}</td>
-                <td data-label="NOTAS">${(item.comment || '-').toUpperCase()}</td>
-                <td data-label="ACCIONES">
-                    <button class="actions-btn" onclick="window.editItem('${id}')">✏️</button>
-                    <button class="actions-btn" onclick="window.deleteItem('${id}')">🗑️</button>
-                </td>`;
+            html += `
+                <tr>
+                    <td data-label="MODELO">${(item.model || '').toUpperCase()}</td>
+                    <td data-label="REPUESTO">${(item.parts || '').toUpperCase()}</td>
+                    <td data-label="COSTO">$${Number(item.buyPrice || 0).toLocaleString('es-CL')}</td>
+                    <td data-label="VENTA">$${Number(item.sellPrice || 0).toLocaleString('es-CL')}</td>
+                    <td data-label="NOTAS">${(item.comment || '-').toUpperCase()}</td>
+                    <td data-label="ACCIONES">
+                        <button class="actions-btn" onclick="window.editItem('${id}')">✏️</button>
+                        <button class="actions-btn" onclick="window.deleteItem('${id}')">🗑️</button>
+                    </td>
+                </tr>`;
         });
+        tableBody.innerHTML = html;
+        window.filterTable(); // Aplicar filtro actual tras el renderizado
     };
 
     window.saveItem = function() {
@@ -227,34 +229,22 @@
         if(confirm("¿ELIMINAR ESTE REGISTRO?")) remove(ref(db, 'inventario/' + id)); 
     };
     
+    // --- OPTIMIZACIÓN DE BÚSQUEDA PARA 10,000 PRODUCTOS ---
+    let debounceTimer;
     window.filterTable = function() {
-       // REEMPLAZA TU FUNCIÓN filterTable POR ESTA PARA VELOCIDAD PERMANENTE
-let debounceTimer;
-window.filterTable = function() {
-    // 1. Cancelamos la ejecución anterior si escribes rápido (Debounce)
-    clearTimeout(debounceTimer);
-    
-    debounceTimer = setTimeout(() => {
-        const filter = document.getElementById("searchInput").value.toUpperCase();
-        const tableBody = document.getElementById("tableBody");
-        const rows = tableBody.rows;
-        
-        // 2. Usamos requestAnimationFrame para que el navegador no se trabe visualmente
-        requestAnimationFrame(() => {
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                // 3. textContent es mucho más rápido que innerText para miles de datos
-                const text = row.textContent || row.innerText;
-                
-                if (text.toUpperCase().indexOf(filter) > -1) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const filter = document.getElementById("searchInput").value.toUpperCase();
+            const rows = document.getElementById("tableBody").rows;
+            
+            requestAnimationFrame(() => {
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    const text = row.textContent || row.innerText;
+                    row.style.display = text.toUpperCase().includes(filter) ? "" : "none";
                 }
-            }
-        });
-    }, 150); // Espera 150ms después de que dejas de escribir
-};);
+            });
+        }, 150);
     };
 
     window.clearInputs = function() {
@@ -271,5 +261,4 @@ window.filterTable = function() {
     if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
 </script>
 </body>
-
 </html>
